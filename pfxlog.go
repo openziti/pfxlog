@@ -18,7 +18,7 @@ func Logger() *logrus.Entry {
 }
 
 func AttachedLogger(attached string) *logrus.Entry {
-	return logrus.StandardLogger().WithField("prefix", fmt.Sprintf("%s:[%s]", functionName(), attached))
+	return logrus.StandardLogger().WithField("prefix", fmt.Sprintf("%s|%s", functionName(), attached))
 }
 
 func functionName() string {
