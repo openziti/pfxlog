@@ -1,7 +1,7 @@
 package main
 
 import (
-	"git.quigley.com/products/pfxlog"
+	"github.com/michaelquigley/pfxlog"
 	"github.com/sirupsen/logrus"
 	"fmt"
 )
