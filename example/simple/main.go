@@ -4,10 +4,12 @@ import (
 	"github.com/michaelquigley/pfxlog"
 	"github.com/sirupsen/logrus"
 	"fmt"
+	"github.com/michaelquigley/pfxlog/example/pkg"
 )
 
 func init() {
 	pfxlog.Global(logrus.DebugLevel)
+	pfxlog.SetTrimmedPrefix("github.com/michaelquigley/pfxlog")
 }
 
 func main() {
@@ -18,6 +20,8 @@ func main() {
 	for i := 0; i < 5; i++ {
 		go counter(i, notifications)
 	}
+
+	pkg.Hello()
 
 	for i := 0; i < 5; i++ {
 		n := <- notifications
