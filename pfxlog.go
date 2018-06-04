@@ -6,6 +6,7 @@ import (
 	"github.com/x-cray/logrus-prefixed-formatter"
 	"runtime"
 	"path/filepath"
+	"strings"
 )
 
 var trimmedPrefix = ""
@@ -25,7 +26,7 @@ func Logger() *logrus.Entry {
 }
 
 func AttachedLogger(attached string) *logrus.Entry {
-	return logrus.StandardLogger().WithField("prefix", fmt.Sprintf("%s//[%s]", functionName(), attached))
+	return logrus.StandardLogger().WithField("prefix", fmt.Sprintf("%s:[%s]", functionName(), attached))
 }
 
 func functionName() string {
@@ -34,7 +35,7 @@ func functionName() string {
 
 	funcName := f.Name()
 	if trimmedPrefix != "" {
-		if len(filepath.SplitList(funcName)) > 0 {
+		if strings.Index("/", funcName) > -1 {
 			trimmedName, err := filepath.Rel(trimmedPrefix, funcName)
 			if err != nil {
 				return funcName + "(!)"
