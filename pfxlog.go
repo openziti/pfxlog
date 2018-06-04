@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"github.com/sirupsen/logrus"
 	"github.com/x-cray/logrus-prefixed-formatter"
-	"runtime"
 	"path/filepath"
+	"runtime"
 	"strings"
 )
 
@@ -35,7 +35,7 @@ func functionName() string {
 
 	funcName := f.Name()
 	if trimmedPrefix != "" {
-		if strings.Index("/", funcName) > -1 {
+		if strings.Index(funcName, "/") > -1 {
 			trimmedName, err := filepath.Rel(trimmedPrefix, funcName)
 			if err != nil {
 				return funcName + "(!)"
