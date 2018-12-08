@@ -1,10 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"github.com/michaelquigley/pfxlog"
 	"github.com/sirupsen/logrus"
-	"fmt"
-	"github.com/michaelquigley/pfxlog/example/pkg"
 )
 
 func init() {
@@ -21,10 +20,8 @@ func main() {
 		go counter(i, notifications)
 	}
 
-	pkg.Hello()
-
 	for i := 0; i < 5; i++ {
-		n := <- notifications
+		n := <-notifications
 		log.Infof("%d done.", n)
 	}
 
