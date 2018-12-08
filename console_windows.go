@@ -6,6 +6,9 @@ import (
 )
 
 func init() {
+	/*
+	 * https://github.com/sirupsen/logrus/issues/496
+	 */
 	handle := syscall.Handle(os.Stdout.Fd())
 	kernel32DLL := syscall.NewLazyDLL("kernel32.dll")
 	setConsoleModeProc := kernel32DLL.NewProc("SetConsoleMode")
