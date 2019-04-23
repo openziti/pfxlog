@@ -5,6 +5,7 @@ import (
 	"github.com/michaelquigley/pfxlog"
 	"github.com/michaelquigley/pfxlog/example/other"
 	"github.com/sirupsen/logrus"
+	"time"
 )
 
 func init() {
@@ -17,11 +18,11 @@ func main() {
 	log.Info("hello world.")
 
 	notifications := make(chan int)
-	for i := 0; i < 5; i++ {
+	for i := 0; i < 50; i++ {
 		go counter(i, notifications)
 	}
 
-	for i := 0; i < 5; i++ {
+	for i := 0; i < 50; i++ {
 		n := <-notifications
 		log.Infof("%d done.", n)
 	}
@@ -35,6 +36,8 @@ func counter(number int, notify chan int) {
 	for i := 0; i < 5; i++ {
 		log.Infof("visited %d.", i)
 	}
+
+	time.Sleep(1 * time.Second)
 
 	c := &other.Component{}
 	c.Hello()

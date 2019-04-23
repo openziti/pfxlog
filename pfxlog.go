@@ -2,12 +2,13 @@ package pfxlog
 
 import (
 	"github.com/sirupsen/logrus"
+	"time"
 )
 
 var prefix string
 
 func Global(level logrus.Level) {
-	logrus.SetFormatter(&Formatter{})
+	logrus.SetFormatter(&Formatter{start: time.Now()})
 	logrus.SetLevel(level)
 	logrus.SetReportCaller(true)
 }
@@ -21,5 +22,5 @@ func Logger() *logrus.Entry {
 }
 
 func AttachedLogger(attached string) *logrus.Entry {
-	return logrus.StandardLogger().WithField("attached", attached)
+	return logrus.StandardLogger().WithField("attachment", attached)
 }
