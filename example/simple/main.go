@@ -9,6 +9,7 @@ import (
 
 func init() {
 	pfxlog.Global(logrus.DebugLevel)
+	pfxlog.SetPrefix("github.com/michaelquigley/")
 }
 
 func main() {
