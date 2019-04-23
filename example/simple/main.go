@@ -3,12 +3,12 @@ package main
 import (
 	"fmt"
 	"github.com/michaelquigley/pfxlog"
+	"github.com/michaelquigley/pfxlog/example/other"
 	"github.com/sirupsen/logrus"
 )
 
 func init() {
 	pfxlog.Global(logrus.DebugLevel)
-	pfxlog.SetTrimmedPrefix("github.com/michaelquigley/pfxlog")
 }
 
 func main() {
@@ -34,6 +34,9 @@ func counter(number int, notify chan int) {
 	for i := 0; i < 5; i++ {
 		log.Infof("visited %d.", i)
 	}
+
+	c := &other.Component{}
+	c.Hello()
 
 	log.Info("complete")
 
