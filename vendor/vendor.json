@@ -73,12 +73,6 @@
 			"revisionTime": "2019-04-03T09:10:19Z"
 		},
 		{
-			"checksumSHA1": "L1vKtjhZ2Lej0kfsLaTUm7ps/Yg=",
-			"path": "github.com/x-cray/logrus-prefixed-formatter",
-			"revision": "bb2702d423886830dee131692131d35648c382e2",
-			"revisionTime": "2017-07-31T09:11:26Z"
-		},
-		{
 			"checksumSHA1": "Zsm3tvgRFJOt3afwwhrGymcSZgg=",
 			"path": "golang.org/x/crypto/ssh/terminal",
 			"revision": "d864b10871cd4370fe574816b489c819c675ccc7",
