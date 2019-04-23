@@ -6,4 +6,5 @@ type Component struct{}
 
 func (c *Component) Hello() {
 	pfxlog.Logger().Infof("oh, wow!")
+	pfxlog.Logger().Errorf("uh...")
 }

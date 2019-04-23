@@ -14,15 +14,40 @@ type Formatter struct {
 
 func (f *Formatter) Format(entry *logrus.Entry) ([]byte, error) {
 	second := time.Since(f.start).Seconds()
+	var level string
+	switch entry.Level {
+	case logrus.PanicLevel:
+		level = panicColor
+	case logrus.FatalLevel:
+		level = fatalColor
+	case logrus.ErrorLevel:
+		level = errorColor
+	case logrus.WarnLevel:
+		level = warnColor
+	case logrus.InfoLevel:
+		level = infoColor
+	case logrus.DebugLevel:
+		level = debugColor
+	case logrus.TraceLevel:
+		level = traceColor
+	}
 	prefix := strings.TrimPrefix(entry.Caller.Function, prefix)
 	if attachment, found := entry.Data["attachment"]; found {
-		prefix += " {" + attachment.(string) +"}"
+		prefix += " {" + attachment.(string) + "}"
 	}
 	return []byte(fmt.Sprintf("%s %s %s: %s\n",
 			ansi.Blue+fmt.Sprintf("[%5.3f]", second)+ansi.DefaultFG,
-			ansi.Yellow+fmt.Sprintf("%5s", entry.Level.String())+ansi.DefaultFG,
+			level,
 			ansi.Green+prefix+ansi.DefaultFG,
 			entry.Message),
 		),
 		nil
 }
+
+var panicColor = ansi.Red + "  PANIC" + ansi.DefaultFG
+var fatalColor = ansi.Red + "  FATAL" + ansi.DefaultFG
+var errorColor = ansi.Red + "  ERROR" + ansi.DefaultFG
+var warnColor = ansi.Red + "WARNING" + ansi.DefaultFG
+var infoColor = ansi.White + "   INFO" + ansi.DefaultFG
+var debugColor = ansi.Blue + "  DEBUG" + ansi.DefaultFG
+var traceColor = ansi.LightBlack + "  TRACE" + ansi.DefaultFG
