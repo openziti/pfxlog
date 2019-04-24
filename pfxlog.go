@@ -23,10 +23,16 @@ func SetPrefix(p string) {
 	prefix = p
 }
 
+func ContextLogger(context string) *logrus.Entry {
+	return logrus.StandardLogger().WithField("context", context)
+}
+
 func Logger() *logrus.Entry {
 	return logrus.NewEntry(logrus.StandardLogger())
 }
 
-func AttachedLogger(attached string) *logrus.Entry {
-	return logrus.StandardLogger().WithField("attachment", attached)
+// Deprecated: Use ContextLogger instead.
+//
+func AttachedLogger(context string) *logrus.Entry {
+	return logrus.StandardLogger().WithField("context", context)
 }

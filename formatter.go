@@ -32,8 +32,8 @@ func (f *Formatter) Format(entry *logrus.Entry) ([]byte, error) {
 		level = traceColor
 	}
 	prefix := strings.TrimPrefix(entry.Caller.Function, prefix)
-	if attachment, found := entry.Data["attachment"]; found {
-		prefix += "|" + attachment.(string) + "|"
+	if context, found := entry.Data["context"]; found {
+		prefix += "|" + context.(string)
 	}
 	return []byte(fmt.Sprintf("%s %s %s: %s\n",
 			ansi.Blue+fmt.Sprintf("[%8.3f]", second)+ansi.DefaultFG,
