@@ -33,12 +33,12 @@ func (f *Formatter) Format(entry *logrus.Entry) ([]byte, error) {
 	}
 	prefix := strings.TrimPrefix(entry.Caller.Function, prefix)
 	if attachment, found := entry.Data["attachment"]; found {
-		prefix += " {" + attachment.(string) + "}"
+		prefix += "|" + attachment.(string) + "|"
 	}
 	return []byte(fmt.Sprintf("%s %s %s: %s\n",
-			ansi.Blue+fmt.Sprintf("[%5.3f]", second)+ansi.DefaultFG,
+			ansi.Blue+fmt.Sprintf("[%8.3f]", second)+ansi.DefaultFG,
 			level,
-			ansi.Green+prefix+ansi.DefaultFG,
+			ansi.Cyan+prefix+ansi.DefaultFG,
 			entry.Message),
 		),
 		nil
@@ -47,7 +47,7 @@ func (f *Formatter) Format(entry *logrus.Entry) ([]byte, error) {
 var panicColor = ansi.Red + "  PANIC" + ansi.DefaultFG
 var fatalColor = ansi.Red + "  FATAL" + ansi.DefaultFG
 var errorColor = ansi.Red + "  ERROR" + ansi.DefaultFG
-var warnColor = ansi.Red + "WARNING" + ansi.DefaultFG
+var warnColor = ansi.Yellow + "WARNING" + ansi.DefaultFG
 var infoColor = ansi.White + "   INFO" + ansi.DefaultFG
 var debugColor = ansi.Blue + "  DEBUG" + ansi.DefaultFG
 var traceColor = ansi.LightBlack + "  TRACE" + ansi.DefaultFG
