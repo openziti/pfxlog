@@ -33,7 +33,7 @@ func (f *Formatter) Format(entry *logrus.Entry) ([]byte, error) {
 	}
 	prefix := strings.TrimPrefix(entry.Caller.Function, prefix)
 	if context, found := entry.Data["context"]; found {
-		prefix += "|" + context.(string)
+		prefix += " [" + context.(string) + "]"
 	}
 	return []byte(fmt.Sprintf("%s %s %s: %s\n",
 			ansi.Blue+fmt.Sprintf("[%8.3f]", second)+ansi.DefaultFG,
