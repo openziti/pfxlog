@@ -60,12 +60,37 @@ func main() {
 		if context, found := msg["context"]; found {
 			prefix += " [" + context.(string) + "]"
 		}
+		message := msg["msg"].(string)
+		data := data(msg)
+		if len(data) > 0 {
+			fields := "{"
+			field := 0
+			for k, v := range data {
+				if field > 0 {
+					fields += " "
+				}
+				field++
+				fields += fmt.Sprintf("%s=[%v]", k, v)
+			}
+			fields += "} "
+			message = ansi.LightCyan + fields + ansi.DefaultFG + message
+		}
 		fmt.Printf("%s %s %s: %s\n",
 			ansi.Blue+fmt.Sprintf("[%8.3f]", delta)+ansi.DefaultFG,
 			level,
 			ansi.Cyan+prefix+ansi.DefaultFG,
-			msg["msg"])
+			message)
 	}
+}
+
+func data(in map[string]interface{}) map[string]interface{} {
+	out := make(map[string]interface{})
+	for k, v := range in {
+		if k != "level" && k != "func" && k != "file" && k != "msg" && k != "time" {
+			out[k] = v
+		}
+	}
+	return out
 }
 
 var panicColor = ansi.Red + "  PANIC" + ansi.DefaultFG
