@@ -86,7 +86,7 @@ func main() {
 func data(in map[string]interface{}) map[string]interface{} {
 	out := make(map[string]interface{})
 	for k, v := range in {
-		if k != "level" && k != "func" && k != "file" && k != "msg" && k != "time" {
+		if k != "level" && k != "func" && k != "file" && k != "msg" && k != "time" && k != "context" {
 			out[k] = v
 		}
 	}
