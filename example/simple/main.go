@@ -24,7 +24,7 @@ func main() {
 
 	for i := 0; i < 50; i++ {
 		n := <-notifications
-		log.Infof("%d done.", n)
+		log.WithField("n", n).Info("done")
 	}
 
 	log.Info("complete.")

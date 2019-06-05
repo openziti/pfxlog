@@ -35,11 +35,25 @@ func (f *Formatter) Format(entry *logrus.Entry) ([]byte, error) {
 	if context, found := entry.Data["context"]; found {
 		prefix += " [" + context.(string) + "]"
 	}
+	message := entry.Message
+	if len(entry.Data) > 0 {
+		fields := "{"
+		field := 0
+		for k, v := range entry.Data {
+			if field > 0 {
+				fields += " "
+			}
+			field++
+			fields += fmt.Sprintf("%s=[%v]", k, v)
+		}
+		fields += "} "
+		message = fields + message
+	}
 	return []byte(fmt.Sprintf("%s %s %s: %s\n",
 			ansi.Blue+fmt.Sprintf("[%8.3f]", second)+ansi.DefaultFG,
 			level,
 			ansi.Cyan+prefix+ansi.DefaultFG,
-			entry.Message),
+			message),
 		),
 		nil
 }
