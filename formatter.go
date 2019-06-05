@@ -47,7 +47,7 @@ func (f *Formatter) Format(entry *logrus.Entry) ([]byte, error) {
 			fields += fmt.Sprintf("%s=[%v]", k, v)
 		}
 		fields += "} "
-		message = fields + message
+		message = ansi.LightCyan + fields + ansi.DefaultFG + message
 	}
 	return []byte(fmt.Sprintf("%s %s %s: %s\n",
 			ansi.Blue+fmt.Sprintf("[%8.3f]", second)+ansi.DefaultFG,
