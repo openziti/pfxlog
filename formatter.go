@@ -36,15 +36,17 @@ func (f *Formatter) Format(entry *logrus.Entry) ([]byte, error) {
 		prefix += " [" + context.(string) + "]"
 	}
 	message := entry.Message
-	if len(entry.Data) > 0 {
+	if withFields(entry.Data) {
 		fields := "{"
 		field := 0
 		for k, v := range entry.Data {
-			if field > 0 {
-				fields += " "
+			if k != "context" {
+				if field > 0 {
+					fields += " "
+				}
+				field++
+				fields += fmt.Sprintf("%s=[%v]", k, v)
 			}
-			field++
-			fields += fmt.Sprintf("%s=[%v]", k, v)
 		}
 		fields += "} "
 		message = ansi.LightCyan + fields + ansi.DefaultFG + message
@@ -56,6 +58,14 @@ func (f *Formatter) Format(entry *logrus.Entry) ([]byte, error) {
 			message),
 		),
 		nil
+}
+
+func withFields(data map[string]interface{}) bool {
+	if _, found := data["context"]; found {
+		return len(data) > 1
+	} else {
+		return len(data) > 0
+	}
 }
 
 var panicColor = ansi.Red + "  PANIC" + ansi.DefaultFG
