@@ -31,9 +31,12 @@ func (f *Formatter) Format(entry *logrus.Entry) ([]byte, error) {
 	case logrus.TraceLevel:
 		level = traceColor
 	}
-	prefix := strings.TrimPrefix(entry.Caller.Function, prefix)
+	trimmedFunction := ""
+	if entry.Caller != nil {
+		trimmedFunction = strings.TrimPrefix(entry.Caller.Function, prefix)
+	}
 	if context, found := entry.Data["context"]; found {
-		prefix += " [" + context.(string) + "]"
+		trimmedFunction += " [" + context.(string) + "]"
 	}
 	message := entry.Message
 	if withFields(entry.Data) {
@@ -54,7 +57,7 @@ func (f *Formatter) Format(entry *logrus.Entry) ([]byte, error) {
 	return []byte(fmt.Sprintf("%s %s %s: %s\n",
 			ansi.Blue+fmt.Sprintf("[%8.3f]", second)+ansi.DefaultFG,
 			level,
-			ansi.Cyan+prefix+ansi.DefaultFG,
+			ansi.Cyan+trimmedFunction+ansi.DefaultFG,
 			message),
 		),
 		nil

@@ -4,13 +4,16 @@ import (
 	"github.com/sirupsen/logrus"
 	"golang.org/x/crypto/ssh/terminal"
 	"os"
+	"strconv"
+	"strings"
 	"time"
 )
 
 var prefix string
 
 func Global(level logrus.Level) {
-	if terminal.IsTerminal(int(os.Stdout.Fd())) {
+	noJson, _ := strconv.ParseBool(strings.ToLower(os.Getenv("PFXLOG_NO_JSON")))
+	if noJson || terminal.IsTerminal(int(os.Stdout.Fd())) {
 		logrus.SetFormatter(&Formatter{start: time.Now()})
 	} else {
 		logrus.SetFormatter(&logrus.JSONFormatter{})
