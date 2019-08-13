@@ -6,7 +6,6 @@ import (
 	"os"
 	"strconv"
 	"strings"
-	"time"
 )
 
 var prefix string
@@ -14,7 +13,7 @@ var prefix string
 func Global(level logrus.Level) {
 	noJson, _ := strconv.ParseBool(strings.ToLower(os.Getenv("PFXLOG_NO_JSON")))
 	if noJson || terminal.IsTerminal(int(os.Stdout.Fd())) {
-		logrus.SetFormatter(&Formatter{start: time.Now()})
+		logrus.SetFormatter(NewFormatter())
 	} else {
 		logrus.SetFormatter(&logrus.JSONFormatter{})
 	}
