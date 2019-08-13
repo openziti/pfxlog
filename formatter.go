@@ -8,11 +8,15 @@ import (
 	"time"
 )
 
-type Formatter struct {
+type formatter struct {
 	start time.Time
 }
 
-func (f *Formatter) Format(entry *logrus.Entry) ([]byte, error) {
+func NewFormatter() logrus.Formatter {
+	return &formatter{start:time.Now()}
+}
+
+func (f *formatter) Format(entry *logrus.Entry) ([]byte, error) {
 	second := time.Since(f.start).Seconds()
 	var level string
 	switch entry.Level {
