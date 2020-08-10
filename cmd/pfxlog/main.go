@@ -56,7 +56,10 @@ func main() {
 		default:
 			panic(fmt.Errorf("unknown (%s)", msg["level"].(string)))
 		}
-		prefix := strings.TrimPrefix(msg["func"].(string), trim)
+		var prefix string
+		if v, found := msg["func"]; found {
+			prefix = strings.TrimPrefix(v.(string), trim)
+		}
 		if context, found := msg["context"]; found {
 			prefix += " [" + context.(string) + "]"
 		}
