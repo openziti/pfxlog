@@ -2,7 +2,6 @@ package pfxlog
 
 import (
 	"github.com/mgutz/ansi"
-	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"golang.org/x/crypto/ssh/terminal"
 	"os"
@@ -27,15 +26,11 @@ func SetPrefix(p string) {
 	prefix = p
 }
 
-func SetDefaultNoColor() error {
+func SetDefaultNoColor() {
 	useColorVar := strings.ToLower(os.Getenv("PFXLOG_USE_COLOR"))
 	useColor := false
-	var err error
 	if useColorVar != "" {
-		useColor, err = strconv.ParseBool(strings.ToLower(os.Getenv("PFXLOG_USE_COLOR")))
-		if err != nil {
-			return errors.Wrap(err, "unable to get PFXLOG_USE_COLOR environment variable")
-		}
+		useColor, _ = strconv.ParseBool(strings.ToLower(os.Getenv("PFXLOG_USE_COLOR")))
 	}
 	logrus.Infof("use color = [%t]", useColor)
 	if !useColor {
@@ -52,7 +47,6 @@ func SetDefaultNoColor() error {
 		debugColor = "  DEBUG"
 		traceColor = "  TRACE"
 	}
-	return nil
 }
 
 func ContextLogger(context string) *logrus.Entry {
