@@ -32,9 +32,7 @@ func SetDefaultNoColor() {
 	if useColorVar != "" {
 		useColor, _ = strconv.ParseBool(strings.ToLower(os.Getenv("PFXLOG_USE_COLOR")))
 	}
-	logrus.Infof("use color = [%t]", useColor)
 	if !useColor {
-		logrus.Infof("no color!")
 		blueColor = ""
 		cyanColor = ""
 		defaultFgColor = ""
