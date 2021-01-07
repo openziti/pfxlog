@@ -11,6 +11,7 @@ import (
 func init() {
 	pfxlog.Global(logrus.DebugLevel)
 	pfxlog.SetPrefix("github.com/michaelquigley/")
+	pfxlog.SetDefaultNoColor()
 }
 
 func main() {

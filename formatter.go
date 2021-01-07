@@ -2,7 +2,6 @@ package pfxlog
 
 import (
 	"fmt"
-	"github.com/mgutz/ansi"
 	"github.com/sirupsen/logrus"
 	"strings"
 	"time"
@@ -13,17 +12,17 @@ type formatter struct {
 }
 
 func NewFormatter() logrus.Formatter {
-	return &formatter{start:time.Now()}
+	return &formatter{start: time.Now()}
 }
 
 func NewFormatterStarting(start time.Time) logrus.Formatter {
-	return &formatter{start:start}
+	return &formatter{start: start}
 }
 
 func NewFormatterStartingToday() logrus.Formatter {
 	now := time.Now()
 	dayStart := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
-	return &formatter{start:dayStart}
+	return &formatter{start: dayStart}
 }
 
 func (f *formatter) Format(entry *logrus.Entry) ([]byte, error) {
@@ -66,12 +65,12 @@ func (f *formatter) Format(entry *logrus.Entry) ([]byte, error) {
 			}
 		}
 		fields += "} "
-		message = ansi.LightCyan + fields + ansi.DefaultFG + message
+		message = lightCyanColor + fields + defaultFgColor + message
 	}
 	return []byte(fmt.Sprintf("%s %s %s: %s\n",
-			ansi.Blue+fmt.Sprintf("[%8.3f]", second)+ansi.DefaultFG,
+			blueColor+fmt.Sprintf("[%8.3f]", second)+defaultFgColor,
 			level,
-			ansi.Cyan+trimmedFunction+ansi.DefaultFG,
+			cyanColor+trimmedFunction+defaultFgColor,
 			message),
 		),
 		nil
@@ -84,11 +83,3 @@ func withFields(data map[string]interface{}) bool {
 		return len(data) > 0
 	}
 }
-
-var panicColor = ansi.Red + "  PANIC" + ansi.DefaultFG
-var fatalColor = ansi.Red + "  FATAL" + ansi.DefaultFG
-var errorColor = ansi.Red + "  ERROR" + ansi.DefaultFG
-var warnColor = ansi.Yellow + "WARNING" + ansi.DefaultFG
-var infoColor = ansi.White + "   INFO" + ansi.DefaultFG
-var debugColor = ansi.Blue + "  DEBUG" + ansi.DefaultFG
-var traceColor = ansi.LightBlack + "  TRACE" + ansi.DefaultFG
