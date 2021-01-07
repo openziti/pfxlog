@@ -1,6 +1,8 @@
 package pfxlog
 
 import (
+	"github.com/mgutz/ansi"
+	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"golang.org/x/crypto/ssh/terminal"
 	"os"
@@ -25,6 +27,34 @@ func SetPrefix(p string) {
 	prefix = p
 }
 
+func SetDefaultNoColor() error {
+	useColorVar := strings.ToLower(os.Getenv("PFXLOG_USE_COLOR"))
+	useColor := false
+	var err error
+	if useColorVar != "" {
+		useColor, err = strconv.ParseBool(strings.ToLower(os.Getenv("PFXLOG_USE_COLOR")))
+		if err != nil {
+			return errors.Wrap(err, "unable to get PFXLOG_USE_COLOR environment variable")
+		}
+	}
+	logrus.Infof("use color = [%t]", useColor)
+	if !useColor {
+		logrus.Infof("no color!")
+		blueColor = ""
+		cyanColor = ""
+		defaultFgColor = ""
+		lightCyanColor = ""
+		panicColor = "  PANIC"
+		fatalColor = "  FATAL"
+		errorColor = "  ERROR"
+		warnColor = "WARNING"
+		infoColor = "   INFO"
+		debugColor = "  DEBUG"
+		traceColor = "  TRACE"
+	}
+	return nil
+}
+
 func ContextLogger(context string) *logrus.Entry {
 	return logrus.StandardLogger().WithField("context", context)
 }
@@ -33,8 +63,15 @@ func Logger() *logrus.Entry {
 	return logrus.NewEntry(logrus.StandardLogger())
 }
 
-// Deprecated: Use ContextLogger instead.
-//
-func AttachedLogger(context string) *logrus.Entry {
-	return logrus.StandardLogger().WithField("context", context)
-}
+var panicColor = ansi.Red + "  PANIC" + ansi.DefaultFG
+var fatalColor = ansi.Red + "  FATAL" + ansi.DefaultFG
+var errorColor = ansi.Red + "  ERROR" + ansi.DefaultFG
+var warnColor = ansi.Yellow + "WARNING" + ansi.DefaultFG
+var infoColor = ansi.White + "   INFO" + ansi.DefaultFG
+var debugColor = ansi.Blue + "  DEBUG" + ansi.DefaultFG
+var traceColor = ansi.LightBlack + "  TRACE" + ansi.DefaultFG
+
+var blueColor = ansi.Blue
+var cyanColor = ansi.Cyan
+var defaultFgColor = ansi.DefaultFG
+var lightCyanColor = ansi.LightCyan
