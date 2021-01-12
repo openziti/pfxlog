@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"encoding/json"
 	"fmt"
 	"github.com/mgutz/ansi"
@@ -16,17 +17,22 @@ func main() {
 		trim = os.Args[1]
 	}
 	fmt.Printf("trimming: [%s]\n", trim)
-	decoder := json.NewDecoder(os.Stdin)
+	r := bufio.NewReader(os.Stdin)
 	var last time.Time
 	lastSet := false
 	for {
-		msg := make(map[string]interface{})
-		err := decoder.Decode(&msg)
+		line, err := r.ReadString('\n')
 		if err == io.EOF {
 			break
 		}
 		if err != nil {
 			panic(err)
+		}
+		msg := make(map[string]interface{})
+		err = json.Unmarshal([]byte(line), &msg)
+		if err != nil {
+			fmt.Println(strings.TrimSpace(line))
+			continue
 		}
 		stamp, err := time.Parse(time.RFC3339, msg["time"].(string))
 		if err != nil {
