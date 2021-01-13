@@ -19,6 +19,10 @@ func init() {
 }
 
 func main() {
+	Main()
+}
+
+func Main() {
 	if err := rootCmd.Execute(); err != nil {
 		panic(err)
 	}
@@ -27,12 +31,12 @@ func main() {
 var rootCmd = &cobra.Command{
 	Use:   strings.TrimSuffix(filepath.Base(os.Args[0]), filepath.Ext(os.Args[0])),
 	Short: "pfxlog filter",
-	Run:   Main,
+	Run:   Filter,
 }
 var trimPrefix string
 var absoluteTime bool
 
-func Main(_ *cobra.Command, _ []string) {
+func Filter(_ *cobra.Command, _ []string) {
 	r := bufio.NewReader(os.Stdin)
 	var last time.Time
 	lastSet := false
