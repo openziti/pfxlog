@@ -12,6 +12,10 @@ import (
 )
 
 func main() {
+	Main()
+}
+
+func Main() {
 	trim := ""
 	if len(os.Args) > 1 {
 		trim = os.Args[1]
