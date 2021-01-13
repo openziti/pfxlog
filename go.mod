@@ -8,5 +8,6 @@ require (
 	github.com/mgutz/ansi v0.0.0-20170206155736-9520e82c474b
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.6.0
-	golang.org/x/crypto v0.0.0-20190422183909-d864b10871cd
+	github.com/spf13/cobra v1.1.1
+	golang.org/x/crypto v0.0.0-20190605123033-f99c8df09eb5
 )

@@ -5,22 +5,34 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/mgutz/ansi"
+	"github.com/spf13/cobra"
 	"io"
 	"os"
+	"path/filepath"
 	"strings"
 	"time"
 )
 
-func main() {
-	Main()
+func init() {
+	rootCmd.Flags().BoolVarP(&absoluteTime, "absolute", "a", false, "Use absolute time for timestamps")
+	rootCmd.Flags().StringVarP(&trimPrefix, "trim", "t", "", "Trim package prefix (ex: github.com/michaelquigley/)")
 }
 
-func Main() {
-	trim := ""
-	if len(os.Args) > 1 {
-		trim = os.Args[1]
+func main() {
+	if err := rootCmd.Execute(); err != nil {
+		panic(err)
 	}
-	fmt.Printf("trimming: [%s]\n", trim)
+}
+
+var rootCmd = &cobra.Command{
+	Use:   strings.TrimSuffix(filepath.Base(os.Args[0]), filepath.Ext(os.Args[0])),
+	Short: "pfxlog filter",
+	Run:   Main,
+}
+var trimPrefix string
+var absoluteTime bool
+
+func Main(_ *cobra.Command, _ []string) {
 	r := bufio.NewReader(os.Stdin)
 	var last time.Time
 	lastSet := false
@@ -68,7 +80,7 @@ func Main() {
 		}
 		var prefix string
 		if v, found := msg["func"]; found {
-			prefix = strings.TrimPrefix(v.(string), trim)
+			prefix = strings.TrimPrefix(v.(string), trimPrefix)
 		}
 		if context, found := msg["context"]; found {
 			prefix += " [" + context.(string) + "]"
@@ -88,8 +100,14 @@ func Main() {
 			fields += "} "
 			message = ansi.LightCyan + fields + ansi.DefaultFG + message
 		}
+		var fmtTs string
+		if absoluteTime {
+			fmtTs = fmt.Sprintf("[%s]", last)
+		} else {
+			fmtTs = fmt.Sprintf("[%8.3f]", delta)
+		}
 		fmt.Printf("%s %s %s: %s\n",
-			ansi.Blue+fmt.Sprintf("[%8.3f]", delta)+ansi.DefaultFG,
+			ansi.Blue+fmtTs+ansi.DefaultFG,
 			level,
 			ansi.Cyan+prefix+ansi.DefaultFG,
 			message)
