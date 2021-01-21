@@ -26,7 +26,7 @@ func Filter(absoluteTime bool, trimPrefix string) {
 		msg := make(map[string]interface{})
 		err = json.Unmarshal([]byte(line), &msg)
 		if err != nil {
-			fmt.Println(strings.TrimSpace(line))
+			fmt.Println(ansi.Yellow + strings.TrimSpace(line) + ansi.DefaultFG)
 			continue
 		}
 		stamp, err := time.Parse(time.RFC3339, msg["time"].(string))
