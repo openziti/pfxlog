@@ -81,7 +81,7 @@ func Filter(absoluteTime bool, trimPrefix string) {
 		}
 		var fmtTs string
 		if absoluteTime {
-			fmtTs = fmt.Sprintf("[%s]", last)
+			fmtTs = fmt.Sprintf("[%s]", stamp.Format(time.RFC3339Nano))
 		} else {
 			fmtTs = fmt.Sprintf("[%8.3f]", delta)
 		}
