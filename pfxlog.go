@@ -16,7 +16,7 @@ func Global(level logrus.Level) {
 	if noJson || terminal.IsTerminal(int(os.Stdout.Fd())) {
 		logrus.SetFormatter(NewFormatter())
 	} else {
-		logrus.SetFormatter(&logrus.JSONFormatter{})
+		logrus.SetFormatter(&logrus.JSONFormatter{TimestampFormat: "2006-01-02T15:04:05.000Z"})
 	}
 	logrus.SetLevel(level)
 	logrus.SetReportCaller(true)
