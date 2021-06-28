@@ -3,8 +3,6 @@ package pfxlog
 import (
 	"fmt"
 	"github.com/sirupsen/logrus"
-	"os"
-	"strconv"
 	"strings"
 	"time"
 )
@@ -13,12 +11,7 @@ type formatter struct {
 	options *Options
 }
 
-func NewFormatter() logrus.Formatter {
-	options := colorDefaultsOrNot()
-	return &formatter{options}
-}
-
-func NewFormatterWithOptions(options *Options) logrus.Formatter {
+func NewFormatter(options *Options) logrus.Formatter {
 	return &formatter{options}
 }
 
@@ -85,14 +78,4 @@ func withFields(data map[string]interface{}) bool {
 	} else {
 		return len(data) > 0
 	}
-}
-
-func colorDefaultsOrNot() *Options {
-	var options *Options
-	if useColor, err := strconv.ParseBool(strings.ToLower(os.Getenv("PFXLOG_USE_COLOR"))); err == nil && useColor {
-		options = DefaultOptions()
-	} else {
-		options = DefaultOptions().NoColor()
-	}
-	return options
 }

@@ -13,7 +13,7 @@ var prefix string
 func Global(level logrus.Level, options *Options) {
 	noJson, _ := strconv.ParseBool(strings.ToLower(os.Getenv("PFXLOG_NO_JSON")))
 	if noJson || terminal.IsTerminal(int(os.Stdout.Fd())) {
-		logrus.SetFormatter(NewFormatterWithOptions(options))
+		logrus.SetFormatter(NewFormatter(options))
 	} else {
 		logrus.SetFormatter(&logrus.JSONFormatter{TimestampFormat: options.JsonTimestampFormat})
 	}
