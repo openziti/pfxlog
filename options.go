@@ -32,8 +32,8 @@ type Options struct {
 
 func DefaultOptions() *Options {
 	options := &Options{
-		StartTimestamp:      time.Now(),
-		UseAbsoluteTime:     false,
+		StartTimestamp:  time.Now(),
+		UseAbsoluteTime: false,
 		JsonTimestampFormat: "2006-01-02T15:04:05.000Z",
 	}
 	if color, err := strconv.ParseBool(strings.ToLower(os.Getenv("PFXLOG_USE_COLOR"))); err == nil && color {
@@ -56,7 +56,6 @@ func (options *Options) StartingToday() *Options {
 	options.StartTimestamp = time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
 	return options
 }
-
 
 func (options *Options) SetAbsoluteTime() *Options {
 	options.UseAbsoluteTime = true

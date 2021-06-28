@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/michaelquigley/pfxlog"
 	"github.com/michaelquigley/pfxlog/filter"
 	"github.com/spf13/cobra"
 	"os"
@@ -29,5 +30,9 @@ var trimPrefix string
 var absoluteTime bool
 
 func Filter(_ *cobra.Command, _ []string) {
-	filter.Filter(absoluteTime, trimPrefix)
+	options := pfxlog.DefaultOptions().SetTrimPrefix(trimPrefix)
+	if absoluteTime {
+		options = options.SetAbsoluteTime()
+	}
+	filter.Filter(options)
 }

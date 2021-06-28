@@ -5,13 +5,14 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/mgutz/ansi"
+	"github.com/michaelquigley/pfxlog"
 	"io"
 	"os"
 	"strings"
 	"time"
 )
 
-func Filter(absoluteTime bool, trimPrefix string) {
+func Filter(options *pfxlog.Options) {
 	r := bufio.NewReader(os.Stdin)
 	var last time.Time
 	lastSet := false
@@ -41,25 +42,25 @@ func Filter(absoluteTime bool, trimPrefix string) {
 		var level string
 		switch msg["level"].(string) {
 		case "panic":
-			level = panicColor
+			level = options.PanicLabel
 		case "fatal":
-			level = fatalColor
+			level = options.FatalLabel
 		case "error":
-			level = errorColor
+			level = options.ErrorLabel
 		case "warning":
-			level = warnColor
+			level = options.WarningLabel
 		case "info":
-			level = infoColor
+			level = options.InfoLabel
 		case "debug":
-			level = debugColor
+			level = options.DebugLabel
 		case "trace":
-			level = traceColor
+			level = options.TraceLabel
 		default:
 			panic(fmt.Errorf("unknown (%s)", msg["level"].(string)))
 		}
 		var prefix string
 		if v, found := msg["func"]; found {
-			prefix = strings.TrimPrefix(v.(string), trimPrefix)
+			prefix = strings.TrimPrefix(v.(string), options.TrimPrefix)
 		}
 		if context, found := msg["context"]; found {
 			prefix += " [" + context.(string) + "]"
@@ -77,18 +78,18 @@ func Filter(absoluteTime bool, trimPrefix string) {
 				fields += fmt.Sprintf("%s=[%v]", k, v)
 			}
 			fields += "} "
-			message = ansi.LightCyan + fields + ansi.DefaultFG + message
+			message = options.FieldsColor + fields + options.DefaultFgColor + message
 		}
 		var fmtTs string
-		if absoluteTime {
+		if options.UseAbsoluteTime {
 			fmtTs = fmt.Sprintf("[%s]", stamp.Format(time.RFC3339Nano))
 		} else {
 			fmtTs = fmt.Sprintf("[%8.3f]", delta)
 		}
 		fmt.Printf("%s %s %s: %s\n",
-			ansi.Blue+fmtTs+ansi.DefaultFG,
+			options.TimestampColor+fmtTs+options.DefaultFgColor,
 			level,
-			ansi.Cyan+prefix+ansi.DefaultFG,
+			options.FunctionColor+prefix+options.DefaultFgColor,
 			message)
 	}
 }
@@ -102,11 +103,3 @@ func data(in map[string]interface{}) map[string]interface{} {
 	}
 	return out
 }
-
-var panicColor = ansi.Red + "  PANIC" + ansi.DefaultFG
-var fatalColor = ansi.Red + "  FATAL" + ansi.DefaultFG
-var errorColor = ansi.Red + "  ERROR" + ansi.DefaultFG
-var warnColor = ansi.Yellow + "WARNING" + ansi.DefaultFG
-var infoColor = ansi.White + "   INFO" + ansi.DefaultFG
-var debugColor = ansi.Blue + "  DEBUG" + ansi.DefaultFG
-var traceColor = ansi.LightBlack + "  TRACE" + ansi.DefaultFG
