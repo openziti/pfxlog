@@ -10,21 +10,26 @@ import (
 )
 
 type formatter struct {
-	start   time.Time
 	options *Options
 }
 
 func NewFormatter() logrus.Formatter {
 	options := colorDefaultsOrNot()
-	return &formatter{start: options.StartTimestamp, options: options}
+	return &formatter{options}
 }
 
 func NewFormatterWithOptions(options *Options) logrus.Formatter {
-	return &formatter{start: options.StartTimestamp, options: options}
+	return &formatter{options}
 }
 
 func (f *formatter) Format(entry *logrus.Entry) ([]byte, error) {
-	second := time.Since(f.start).Seconds()
+	var timeLabel string
+	if f.options.UseAbsoluteTime {
+		timeLabel = "[" + time.Now().Format(f.options.JsonTimestampFormat) + "]"
+	} else {
+		seconds := time.Since(f.options.StartTimestamp).Seconds()
+		timeLabel = fmt.Sprintf("[%8.3f]", seconds)
+	}
 	var level string
 	switch entry.Level {
 	case logrus.PanicLevel:
@@ -66,7 +71,7 @@ func (f *formatter) Format(entry *logrus.Entry) ([]byte, error) {
 		message = f.options.FieldsColor + fields + f.options.DefaultFgColor + message
 	}
 	return []byte(fmt.Sprintf("%s %s %s: %s\n",
-			f.options.TimestampColor+fmt.Sprintf("[%8.3f]", second)+f.options.DefaultFgColor,
+			f.options.TimestampColor+timeLabel+f.options.DefaultFgColor,
 			level,
 			f.options.FunctionColor+trimmedFunction+f.options.DefaultFgColor,
 			message),
