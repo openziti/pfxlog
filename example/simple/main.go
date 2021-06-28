@@ -9,9 +9,7 @@ import (
 )
 
 func init() {
-	pfxlog.Global(logrus.DebugLevel)
-	pfxlog.SetPrefix("github.com/michaelquigley/")
-	pfxlog.SetDefaultNoColor()
+	pfxlog.Global(logrus.DebugLevel, pfxlog.DefaultOptions().SetTrimPrefix("github.com/michaelquigley/"))
 }
 
 func main() {

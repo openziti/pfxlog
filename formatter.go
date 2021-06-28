@@ -3,26 +3,24 @@ package pfxlog
 import (
 	"fmt"
 	"github.com/sirupsen/logrus"
+	"os"
+	"strconv"
 	"strings"
 	"time"
 )
 
 type formatter struct {
-	start time.Time
+	start   time.Time
+	options *Options
 }
 
 func NewFormatter() logrus.Formatter {
-	return &formatter{start: time.Now()}
+	options := colorDefaultsOrNot()
+	return &formatter{start: options.StartTimestamp, options: options}
 }
 
-func NewFormatterStarting(start time.Time) logrus.Formatter {
-	return &formatter{start: start}
-}
-
-func NewFormatterStartingToday() logrus.Formatter {
-	now := time.Now()
-	dayStart := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
-	return &formatter{start: dayStart}
+func NewFormatterWithOptions(options *Options) logrus.Formatter {
+	return &formatter{start: options.StartTimestamp, options: options}
 }
 
 func (f *formatter) Format(entry *logrus.Entry) ([]byte, error) {
@@ -30,19 +28,19 @@ func (f *formatter) Format(entry *logrus.Entry) ([]byte, error) {
 	var level string
 	switch entry.Level {
 	case logrus.PanicLevel:
-		level = panicColor
+		level = f.options.PanicLabel
 	case logrus.FatalLevel:
-		level = fatalColor
+		level = f.options.FatalLabel
 	case logrus.ErrorLevel:
-		level = errorColor
+		level = f.options.ErrorLabel
 	case logrus.WarnLevel:
-		level = warnColor
+		level = f.options.WarningLabel
 	case logrus.InfoLevel:
-		level = infoColor
+		level = f.options.InfoLabel
 	case logrus.DebugLevel:
-		level = debugColor
+		level = f.options.DebugLabel
 	case logrus.TraceLevel:
-		level = traceColor
+		level = f.options.TraceLabel
 	}
 	trimmedFunction := ""
 	if entry.Caller != nil {
@@ -65,12 +63,12 @@ func (f *formatter) Format(entry *logrus.Entry) ([]byte, error) {
 			}
 		}
 		fields += "} "
-		message = lightCyanColor + fields + defaultFgColor + message
+		message = f.options.FieldsColor + fields + f.options.DefaultFgColor + message
 	}
 	return []byte(fmt.Sprintf("%s %s %s: %s\n",
-			blueColor+fmt.Sprintf("[%8.3f]", second)+defaultFgColor,
+			f.options.TimestampColor+fmt.Sprintf("[%8.3f]", second)+f.options.DefaultFgColor,
 			level,
-			cyanColor+trimmedFunction+defaultFgColor,
+			f.options.FunctionColor+trimmedFunction+f.options.DefaultFgColor,
 			message),
 		),
 		nil
@@ -82,4 +80,14 @@ func withFields(data map[string]interface{}) bool {
 	} else {
 		return len(data) > 0
 	}
+}
+
+func colorDefaultsOrNot() *Options {
+	var options *Options
+	if useColor, err := strconv.ParseBool(strings.ToLower(os.Getenv("PFXLOG_USE_COLOR"))); err == nil && useColor {
+		options = DefaultOptions()
+	} else {
+		options = DefaultOptions().NoColor()
+	}
+	return options
 }
