@@ -40,7 +40,7 @@ func DefaultOptions() *Options {
 		return options.Color()
 	} else {
 		if err != nil {
-			fmt.Printf("pfxlog: error parsing 'PFXLOG_USE_COLOR' (%v)", err)
+			_, _ = fmt.Fprintf(os.Stderr, "pfxlog: error parsing 'PFXLOG_USE_COLOR' (%v)", err)
 		}
 		return options.NoColor()
 	}
