@@ -82,7 +82,7 @@ func Filter(options *Options) {
 		}
 		var fmtTs string
 		if options.UseAbsoluteTime {
-			fmtTs = fmt.Sprintf("[%s]", stamp.Format(time.RFC3339Nano))
+			fmtTs = fmt.Sprintf("[%s]", stamp.Format(options.PrettyTimestampFormat))
 		} else {
 			fmtTs = fmt.Sprintf("[%8.3f]", delta)
 		}
