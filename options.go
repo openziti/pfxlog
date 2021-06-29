@@ -27,14 +27,16 @@ type Options struct {
 	FieldsColor    string
 	DefaultFgColor string
 
-	JsonTimestampFormat string
+	PrettyTimestampFormat string
+	JsonTimestampFormat   string
 }
 
 func DefaultOptions() *Options {
 	options := &Options{
-		StartTimestamp:      time.Now(),
-		UseAbsoluteTime:     false,
-		JsonTimestampFormat: "2006-01-02T15:04:05.000Z",
+		StartTimestamp:        time.Now(),
+		UseAbsoluteTime:       false,
+		PrettyTimestampFormat: "2006-01-02 15:04:05.000",
+		JsonTimestampFormat:   "2006-01-02T15:04:05.000Z",
 	}
 	if color, err := strconv.ParseBool(strings.ToLower(os.Getenv("PFXLOG_USE_COLOR"))); err == nil && color {
 		return options.Color()

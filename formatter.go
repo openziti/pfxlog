@@ -18,7 +18,7 @@ func NewFormatter(options *Options) logrus.Formatter {
 func (f *formatter) Format(entry *logrus.Entry) ([]byte, error) {
 	var timeLabel string
 	if f.options.UseAbsoluteTime {
-		timeLabel = "[" + time.Now().Format(f.options.JsonTimestampFormat) + "]"
+		timeLabel = "[" + time.Now().Format(f.options.PrettyTimestampFormat) + "]"
 	} else {
 		seconds := time.Since(f.options.StartTimestamp).Seconds()
 		timeLabel = fmt.Sprintf("[%8.3f]", seconds)
