@@ -24,6 +24,7 @@ func Filter(options *pfxlog.Options) {
 		if err != nil {
 			panic(err)
 		}
+		line = autocut(line)
 		msg := make(map[string]interface{})
 		err = json.Unmarshal([]byte(line), &msg)
 		if err != nil {
@@ -102,4 +103,12 @@ func data(in map[string]interface{}) map[string]interface{} {
 		}
 	}
 	return out
+}
+
+func autocut(inputLine string) string {
+	idx := strings.IndexRune(inputLine, '{')
+	if idx > -1 {
+		return inputLine[idx:]
+	}
+	return inputLine
 }
