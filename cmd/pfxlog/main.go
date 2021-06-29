@@ -2,7 +2,6 @@ package main
 
 import (
 	"github.com/michaelquigley/pfxlog"
-	"github.com/michaelquigley/pfxlog/filter"
 	"github.com/spf13/cobra"
 	"os"
 	"path/filepath"
@@ -34,5 +33,5 @@ func Filter(_ *cobra.Command, _ []string) {
 	if absoluteTime {
 		options = options.SetAbsoluteTime()
 	}
-	filter.Filter(options)
+	pfxlog.Filter(options)
 }

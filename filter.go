@@ -1,18 +1,17 @@
-package filter
+package pfxlog
 
 import (
 	"bufio"
 	"encoding/json"
 	"fmt"
 	"github.com/mgutz/ansi"
-	"github.com/michaelquigley/pfxlog"
 	"io"
 	"os"
 	"strings"
 	"time"
 )
 
-func Filter(options *pfxlog.Options) {
+func Filter(options *Options) {
 	r := bufio.NewReader(os.Stdin)
 	var last time.Time
 	lastSet := false
