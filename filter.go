@@ -81,7 +81,7 @@ func Filter(options *Options) {
 			message = options.FieldsColor + fields + options.DefaultFgColor + message
 		}
 		var fmtTs string
-		if options.UseAbsoluteTime {
+		if options.AbsoluteTime {
 			fmtTs = fmt.Sprintf("[%s]", stamp.Format(options.PrettyTimestampFormat))
 		} else {
 			fmtTs = fmt.Sprintf("[%8.3f]", delta)

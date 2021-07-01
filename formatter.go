@@ -17,7 +17,7 @@ func NewFormatter(options *Options) logrus.Formatter {
 
 func (f *formatter) Format(entry *logrus.Entry) ([]byte, error) {
 	var timeLabel string
-	if f.options.UseAbsoluteTime {
+	if f.options.AbsoluteTime {
 		timeLabel = "[" + time.Now().Format(f.options.PrettyTimestampFormat) + "]"
 	} else {
 		seconds := time.Since(f.options.StartTimestamp).Seconds()

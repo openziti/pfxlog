@@ -10,9 +10,9 @@ import (
 )
 
 type Options struct {
-	StartTimestamp  time.Time
-	UseAbsoluteTime bool
-	TrimPrefix      string
+	StartTimestamp time.Time
+	AbsoluteTime   bool
+	TrimPrefix     string
 
 	PanicLabel   string
 	FatalLabel   string
@@ -34,7 +34,7 @@ type Options struct {
 func DefaultOptions() *Options {
 	options := &Options{
 		StartTimestamp:        time.Now(),
-		UseAbsoluteTime:       false,
+		AbsoluteTime:          false,
 		PrettyTimestampFormat: "2006-01-02 15:04:05.000",
 		JsonTimestampFormat:   "2006-01-02T15:04:05.000Z",
 	}
@@ -60,7 +60,7 @@ func (options *Options) StartingToday() *Options {
 }
 
 func (options *Options) SetAbsoluteTime() *Options {
-	options.UseAbsoluteTime = true
+	options.AbsoluteTime = true
 	return options
 }
 func (options *Options) SetTrimPrefix(prefix string) *Options {
