@@ -3,6 +3,7 @@ package pfxlog
 import (
 	"fmt"
 	"github.com/mgutz/ansi"
+	"github.com/sirupsen/logrus"
 	"os"
 	"strconv"
 	"strings"
@@ -29,6 +30,8 @@ type Options struct {
 
 	PrettyTimestampFormat string
 	JsonTimestampFormat   string
+
+	ContextDataFielder func(data interface{}, logger *logrus.Logger) *logrus.Entry
 }
 
 func DefaultOptions() *Options {
@@ -63,6 +66,7 @@ func (options *Options) SetAbsoluteTime() *Options {
 	options.AbsoluteTime = true
 	return options
 }
+
 func (options *Options) SetTrimPrefix(prefix string) *Options {
 	options.TrimPrefix = prefix
 	return options

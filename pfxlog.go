@@ -10,9 +10,13 @@ import (
 )
 
 func GlobalInit(level logrus.Level, options *Options) {
-	noJson, err := strconv.ParseBool(strings.ToLower(os.Getenv("PFXLOG_NO_JSON")))
+	noJsonStr := "false"
+	if noJsonEnv := strings.ToLower(os.Getenv("PFXLOG_NO_JSON")); noJsonEnv != "" {
+		noJsonStr = noJsonEnv
+	}
+	noJson, err := strconv.ParseBool(noJsonStr)
 	if err != nil {
-		_, _ = fmt.Fprintf(os.Stderr, "pfxlog: error parsing 'PFXLOG_NO_JSON' (%v)", err)
+		_, _ = fmt.Fprintf(os.Stderr, "pfxlog: error parsing 'PFXLOG_NO_JSON' (%v)\n", err)
 	}
 	if (err == nil && noJson) || terminal.IsTerminal(int(os.Stdout.Fd())) {
 		logrus.SetFormatter(NewFormatter(options))
@@ -21,6 +25,7 @@ func GlobalInit(level logrus.Level, options *Options) {
 	}
 	logrus.SetLevel(level)
 	logrus.SetReportCaller(true)
+	globalOptions = options
 }
 
 func Logger() *logrus.Entry {
@@ -30,3 +35,13 @@ func Logger() *logrus.Entry {
 func ContextLogger(context string) *logrus.Entry {
 	return logrus.StandardLogger().WithField("context", context)
 }
+
+func ContextDataLogger(contextData interface{}) *logrus.Entry {
+	if globalOptions.ContextDataFielder != nil {
+		return globalOptions.ContextDataFielder(contextData, logrus.StandardLogger())
+	} else {
+		return logrus.StandardLogger().WithFields(nil)
+	}
+}
+
+var globalOptions *Options
