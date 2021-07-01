@@ -26,6 +26,8 @@ func GlobalInit(level logrus.Level, options *Options) {
 	logrus.SetLevel(level)
 	logrus.SetReportCaller(true)
 	globalOptions = options
+	noLogger = logrus.New()
+	noLogger.SetLevel(logrus.PanicLevel)
 }
 
 func Logger() *logrus.Entry {
@@ -44,4 +46,13 @@ func ContextDataLogger(contextData interface{}) *logrus.Entry {
 	}
 }
 
+func ContextChecker(contextData interface{}) *logrus.Entry {
+	if globalOptions.ContextDataFielder != nil && globalOptions.ContextChecker(contextData) {
+		return logrus.StandardLogger().WithFields(nil)
+	} else {
+		return &logrus.Entry{Logger: noLogger}
+	}
+}
+
 var globalOptions *Options
+var noLogger *logrus.Logger

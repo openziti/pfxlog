@@ -32,6 +32,7 @@ type Options struct {
 	JsonTimestampFormat   string
 
 	ContextDataFielder func(data interface{}, logger *logrus.Logger) *logrus.Entry
+	ContextChecker     func(data interface{}) bool
 }
 
 func DefaultOptions() *Options {
