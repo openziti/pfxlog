@@ -32,7 +32,7 @@ type Options struct {
 	JsonTimestampFormat   string
 
 	ContextDataFielder func(data interface{}, logger *logrus.Logger) *logrus.Entry
-	ContextChecker     func(data interface{}) bool
+	ContextDataChecker func(data interface{}) bool
 }
 
 func DefaultOptions() *Options {
@@ -42,12 +42,9 @@ func DefaultOptions() *Options {
 		PrettyTimestampFormat: "2006-01-02 15:04:05.000",
 		JsonTimestampFormat:   "2006-01-02T15:04:05.000Z",
 	}
-	if color, err := strconv.ParseBool(strings.ToLower(os.Getenv("PFXLOG_USE_COLOR"))); err == nil && color {
+	if defaultEnv("PFXLOG_USE_COLOR", false) {
 		return options.Color()
 	} else {
-		if err != nil {
-			_, _ = fmt.Fprintf(os.Stderr, "pfxlog: error parsing 'PFXLOG_USE_COLOR' (%v)", err)
-		}
 		return options.NoColor()
 	}
 }
@@ -105,4 +102,15 @@ func (options *Options) NoColor() *Options {
 	options.DefaultFgColor = ""
 
 	return options
+}
+
+func defaultEnv(env string, defaultValue bool) bool {
+	if envStr := strings.ToLower(os.Getenv(env)); envStr != "" {
+		if envValue, err := strconv.ParseBool(envStr); err == nil {
+			return envValue
+		} else {
+			_, _ = fmt.Fprintf(os.Stderr, "error parsing environment variable '%s' (%v)\n", env, err)
+		}
+	}
+	return defaultValue
 }

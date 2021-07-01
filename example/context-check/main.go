@@ -13,7 +13,7 @@ func init() {
 		}
 		return logger.WithFields(nil)
 	}
-	options.ContextChecker = func(v interface{}) bool {
+	options.ContextDataChecker = func(v interface{}) bool {
 		i, ok := v.(int)
 		if ok {
 			if i % 2 == 0 {
