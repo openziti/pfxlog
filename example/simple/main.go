@@ -9,7 +9,7 @@ import (
 )
 
 func init() {
-	pfxlog.Global(logrus.DebugLevel, pfxlog.DefaultOptions().SetTrimPrefix("github.com/michaelquigley/").SetAbsoluteTime())
+	pfxlog.GlobalInit(logrus.DebugLevel, pfxlog.DefaultOptions().SetTrimPrefix("github.com/michaelquigley/").SetAbsoluteTime())
 }
 
 func main() {

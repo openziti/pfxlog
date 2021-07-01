@@ -9,9 +9,7 @@ import (
 	"strings"
 )
 
-var prefix string
-
-func Global(level logrus.Level, options *Options) {
+func GlobalInit(level logrus.Level, options *Options) {
 	noJson, err := strconv.ParseBool(strings.ToLower(os.Getenv("PFXLOG_NO_JSON")))
 	if err != nil {
 		_, _ = fmt.Fprintf(os.Stderr, "pfxlog: error parsing 'PFXLOG_NO_JSON' (%v)", err)
@@ -25,10 +23,10 @@ func Global(level logrus.Level, options *Options) {
 	logrus.SetReportCaller(true)
 }
 
-func ContextLogger(context string) *logrus.Entry {
-	return logrus.StandardLogger().WithField("context", context)
-}
-
 func Logger() *logrus.Entry {
 	return logrus.NewEntry(logrus.StandardLogger())
+}
+
+func ContextLogger(context string) *logrus.Entry {
+	return logrus.StandardLogger().WithField("context", context)
 }

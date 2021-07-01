@@ -42,7 +42,7 @@ func (f *formatter) Format(entry *logrus.Entry) ([]byte, error) {
 	}
 	trimmedFunction := ""
 	if entry.Caller != nil {
-		trimmedFunction = strings.TrimPrefix(entry.Caller.Function, prefix)
+		trimmedFunction = strings.TrimPrefix(entry.Caller.Function, f.options.TrimPrefix)
 	}
 	if context, found := entry.Data["context"]; found {
 		trimmedFunction += " [" + context.(string) + "]"
