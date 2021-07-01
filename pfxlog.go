@@ -46,9 +46,17 @@ func ContextDataLogger(contextData interface{}) *logrus.Entry {
 	}
 }
 
-func ContextChecker(contextData interface{}) *logrus.Entry {
-	if globalOptions.ContextDataFielder != nil && globalOptions.ContextChecker(contextData) {
+func ContextCheck(contextData interface{}) *logrus.Entry {
+	if globalOptions.ContextChecker != nil && globalOptions.ContextChecker(contextData) {
 		return logrus.StandardLogger().WithFields(nil)
+	} else {
+		return &logrus.Entry{Logger: noLogger}
+	}
+}
+
+func ContextCheckData(contextData interface{}) *logrus.Entry {
+	if globalOptions.ContextChecker != nil && globalOptions.ContextChecker(contextData) {
+		return ContextDataLogger(contextData)
 	} else {
 		return &logrus.Entry{Logger: noLogger}
 	}
