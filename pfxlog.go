@@ -17,93 +17,93 @@ func GlobalInit(level logrus.Level, options *Options) {
 	globalOptions = options
 }
 
-func Logger() *PfxBuilder {
-	return &PfxBuilder{logrus.NewEntry(globalOptions.StandardLogger)}
+func Logger() *Builder {
+	return &Builder{logrus.NewEntry(globalOptions.StandardLogger)}
 }
 
-func ContextLogger(context string) *PfxBuilder {
-	return &PfxBuilder{globalOptions.StandardLogger.WithField("context", context)}
+func ContextLogger(context string) *Builder {
+	return &Builder{globalOptions.StandardLogger.WithField("context", context)}
 }
 
-type PfxBuilder struct {
+type Builder struct {
 	Entry *logrus.Entry
 }
 
-func (self *PfxBuilder) Data(data interface{}) *PfxBuilder {
+func (self *Builder) Data(data interface{}) *Builder {
 	if globalOptions.ContextDataFielder != nil {
 		self.Entry = globalOptions.ContextDataFielder(data, self.Entry)
 	}
 	return self
 }
 
-func (self *PfxBuilder) Enabled(data interface{}) *PfxBuilder {
+func (self *Builder) Enabled(data interface{}) *Builder {
 	if globalOptions.ContextDataChecker != nil && !globalOptions.ContextDataChecker(data) {
 		self.Entry.Logger = globalOptions.NoLogger
 	}
 	return self
 }
 
-func (self *PfxBuilder) Trace(args ...interface{}) {
+func (self *Builder) Trace(args ...interface{}) {
 	self.Entry.Trace(args...)
 }
 
-func (self *PfxBuilder) Tracef(format string, args ...interface{}) {
+func (self *Builder) Tracef(format string, args ...interface{}) {
 	self.Entry.Tracef(format, args...)
 }
 
-func (self *PfxBuilder) Debug(args ...interface{}) {
+func (self *Builder) Debug(args ...interface{}) {
 	self.Entry.Debug(args...)
 }
 
-func (self *PfxBuilder) Debugf(format string, args ...interface{}) {
+func (self *Builder) Debugf(format string, args ...interface{}) {
 	self.Entry.Debugf(format, args...)
 }
 
-func (self *PfxBuilder) Print(args ...interface{}) {
+func (self *Builder) Print(args ...interface{}) {
 	self.Entry.Print(args...)
 }
 
-func (self *PfxBuilder) Printf(format string, args ...interface{}) {
+func (self *Builder) Printf(format string, args ...interface{}) {
 	self.Entry.Printf(format, args...)
 }
 
-func (self *PfxBuilder) Info(args ...interface{}) {
+func (self *Builder) Info(args ...interface{}) {
 	self.Entry.Info(args...)
 }
 
-func (self *PfxBuilder) Infof(format string, args ...interface{}) {
+func (self *Builder) Infof(format string, args ...interface{}) {
 	self.Entry.Infof(format, args...)
 }
 
-func (self *PfxBuilder) Warn(args ...interface{}) {
+func (self *Builder) Warn(args ...interface{}) {
 	self.Entry.Warn(args...)
 }
 
-func (self *PfxBuilder) Warnf(format string, args ...interface{}) {
+func (self *Builder) Warnf(format string, args ...interface{}) {
 	self.Entry.Warnf(format, args...)
 }
 
-func (self *PfxBuilder) Error(args ...interface{}) {
+func (self *Builder) Error(args ...interface{}) {
 	self.Entry.Error(args...)
 }
 
-func (self *PfxBuilder) Errorf(format string, args ...interface{}) {
+func (self *Builder) Errorf(format string, args ...interface{}) {
 	self.Entry.Errorf(format, args...)
 }
 
-func (self *PfxBuilder) Fatal(args ...interface{}) {
+func (self *Builder) Fatal(args ...interface{}) {
 	self.Entry.Fatal(args...)
 }
 
-func (self *PfxBuilder) Fatalf(format string, args ...interface{}) {
+func (self *Builder) Fatalf(format string, args ...interface{}) {
 	self.Entry.Fatalf(format, args...)
 }
 
-func (self *PfxBuilder) Panic(args ...interface{}) {
+func (self *Builder) Panic(args ...interface{}) {
 	self.Entry.Panic(args...)
 }
 
-func (self *PfxBuilder) Panicf(format string, args ...interface{}) {
+func (self *Builder) Panicf(format string, args ...interface{}) {
 	self.Entry.Panicf(format, args...)
 }
 
