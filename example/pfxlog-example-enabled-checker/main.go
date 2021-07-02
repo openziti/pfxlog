@@ -28,6 +28,6 @@ func init() {
 func main() {
 	logrus.Info("starting")
 	pfxlog.Logger().Enabled(2).Info("oh, wow!")
-	pfxlog.Logger().Enabled(3).Warn("oh, no!")
+	pfxlog.Logger().Enabled(3).Warn("oh, no! (should not log)")
 	pfxlog.Logger().Enabled(44).Data(44).Info("show it")
 }
