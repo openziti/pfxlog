@@ -26,7 +26,7 @@ func ContextLogger(context string) *Builder {
 }
 
 type Builder struct {
-	Entry *logrus.Entry
+	*logrus.Entry
 }
 
 func (self *Builder) Data(data interface{}) *Builder {
@@ -52,70 +52,6 @@ func (self *Builder) Channels(channels ...string) *Builder {
 	}
 	self.Entry.Logger = globalOptions.NoLogger
 	return self
-}
-
-func (self *Builder) Trace(args ...interface{}) {
-	self.Entry.Trace(args...)
-}
-
-func (self *Builder) Tracef(format string, args ...interface{}) {
-	self.Entry.Tracef(format, args...)
-}
-
-func (self *Builder) Debug(args ...interface{}) {
-	self.Entry.Debug(args...)
-}
-
-func (self *Builder) Debugf(format string, args ...interface{}) {
-	self.Entry.Debugf(format, args...)
-}
-
-func (self *Builder) Print(args ...interface{}) {
-	self.Entry.Print(args...)
-}
-
-func (self *Builder) Printf(format string, args ...interface{}) {
-	self.Entry.Printf(format, args...)
-}
-
-func (self *Builder) Info(args ...interface{}) {
-	self.Entry.Info(args...)
-}
-
-func (self *Builder) Infof(format string, args ...interface{}) {
-	self.Entry.Infof(format, args...)
-}
-
-func (self *Builder) Warn(args ...interface{}) {
-	self.Entry.Warn(args...)
-}
-
-func (self *Builder) Warnf(format string, args ...interface{}) {
-	self.Entry.Warnf(format, args...)
-}
-
-func (self *Builder) Error(args ...interface{}) {
-	self.Entry.Error(args...)
-}
-
-func (self *Builder) Errorf(format string, args ...interface{}) {
-	self.Entry.Errorf(format, args...)
-}
-
-func (self *Builder) Fatal(args ...interface{}) {
-	self.Entry.Fatal(args...)
-}
-
-func (self *Builder) Fatalf(format string, args ...interface{}) {
-	self.Entry.Fatalf(format, args...)
-}
-
-func (self *Builder) Panic(args ...interface{}) {
-	self.Entry.Panic(args...)
-}
-
-func (self *Builder) Panicf(format string, args ...interface{}) {
-	self.Entry.Panicf(format, args...)
 }
 
 var globalOptions *Options
