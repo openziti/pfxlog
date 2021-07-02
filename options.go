@@ -123,6 +123,17 @@ func (options *Options) NoColor() *Options {
 	return options
 }
 
+func CloneLogger(logger *logrus.Logger) *logrus.Logger {
+	return &logrus.Logger{
+		Out:          logger.Out,
+		Hooks:        logger.Hooks,
+		Formatter:    logger.Formatter,
+		ReportCaller: logger.ReportCaller,
+		Level:        logger.Level,
+		ExitFunc:     logger.ExitFunc,
+	}
+}
+
 func defaultEnv(env string, defaultValue bool) bool {
 	if envStr := strings.ToLower(os.Getenv(env)); envStr != "" {
 		if envValue, err := strconv.ParseBool(envStr); err == nil {
