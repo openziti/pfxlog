@@ -31,8 +31,10 @@ type Options struct {
 	PrettyTimestampFormat string
 	JsonTimestampFormat   string
 
-	ContextDataFielder func(data interface{}, entry *logrus.Entry) *logrus.Entry
-	ContextDataChecker func(data interface{}) bool
+	ActiveChannels map[string]struct{}
+
+	DataFielder    func(data interface{}, entry *logrus.Entry) *logrus.Entry
+	EnabledChecker func(data interface{}) bool
 
 	StandardLogger *logrus.Logger
 	NoLogger       *logrus.Logger
@@ -74,6 +76,16 @@ func (options *Options) SetAbsoluteTime() *Options {
 
 func (options *Options) SetTrimPrefix(prefix string) *Options {
 	options.TrimPrefix = prefix
+	return options
+}
+
+func (options *Options) SetActiveChannels(channels ...string) *Options {
+	for _, channel := range channels {
+		if options.ActiveChannels == nil {
+			options.ActiveChannels = make(map[string]struct{})
+		}
+		options.ActiveChannels[channel] = struct{}{}
+	}
 	return options
 }
 

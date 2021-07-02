@@ -30,16 +30,27 @@ type Builder struct {
 }
 
 func (self *Builder) Data(data interface{}) *Builder {
-	if globalOptions.ContextDataFielder != nil {
-		self.Entry = globalOptions.ContextDataFielder(data, self.Entry)
+	if globalOptions.DataFielder != nil {
+		self.Entry = globalOptions.DataFielder(data, self.Entry)
 	}
 	return self
 }
 
 func (self *Builder) Enabled(data interface{}) *Builder {
-	if globalOptions.ContextDataChecker != nil && !globalOptions.ContextDataChecker(data) {
+	if globalOptions.EnabledChecker != nil && !globalOptions.EnabledChecker(data) {
 		self.Entry.Logger = globalOptions.NoLogger
 	}
+	return self
+}
+
+func (self *Builder) Channels(channels ...string) *Builder {
+	for _, channel := range channels {
+		if _, found := globalOptions.ActiveChannels[channel]; found {
+			self.Entry = self.Entry.WithField("channels", channels)
+			return self
+		}
+	}
+	self.Entry.Logger = globalOptions.NoLogger
 	return self
 }
 

@@ -7,13 +7,13 @@ import (
 
 func init() {
 	options := pfxlog.DefaultOptions()
-	options.ContextDataFielder = func(v interface{}, entry *logrus.Entry) *logrus.Entry {
+	options.DataFielder = func(v interface{}, entry *logrus.Entry) *logrus.Entry {
 		if i, ok := v.(int); ok {
 			return entry.WithField("i", i)
 		}
 		return entry.WithFields(nil)
 	}
-	options.ContextDataChecker = func(v interface{}) bool {
+	options.EnabledChecker = func(v interface{}) bool {
 		i, ok := v.(int)
 		if ok {
 			if i%2 == 0 {

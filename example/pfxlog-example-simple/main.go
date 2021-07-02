@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/michaelquigley/pfxlog"
-	"github.com/michaelquigley/pfxlog/example/other"
+	other2 "github.com/michaelquigley/pfxlog/example/pfxlog-example-simple/other"
 	"github.com/sirupsen/logrus"
 	"time"
 )
@@ -38,7 +38,7 @@ func counter(number int, notify chan int) {
 
 	time.Sleep(1 * time.Second)
 
-	c := &other.Component{}
+	c := &other2.Component{}
 	c.Hello()
 
 	log.Info("complete")
