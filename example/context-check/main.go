@@ -7,16 +7,16 @@ import (
 
 func init() {
 	options := pfxlog.DefaultOptions()
-	options.ContextDataFielder = func(v interface{}, logger *logrus.Logger) *logrus.Entry {
+	options.ContextDataFielder = func(v interface{}, entry *logrus.Entry) *logrus.Entry {
 		if i, ok := v.(int); ok {
-			return logger.WithField("i", i)
+			return entry.WithField("i", i)
 		}
-		return logger.WithFields(nil)
+		return entry.WithFields(nil)
 	}
 	options.ContextDataChecker = func(v interface{}) bool {
 		i, ok := v.(int)
 		if ok {
-			if i % 2 == 0 {
+			if i%2 == 0 {
 				return true
 			}
 		}
@@ -27,8 +27,7 @@ func init() {
 
 func main() {
 	logrus.Info("starting")
-	pfxlog.ContextCheck(2).Info("oh, wow!")
-	pfxlog.ContextCheck(3).Warn("oh, no!")
-	pfxlog.ContextCheckData(44).Info("show it")
+	pfxlog.Logger().Enabled(2).Info("oh, wow!")
+	pfxlog.Logger().Enabled(3).Warn("oh, no!")
+	pfxlog.Logger().Enabled(44).Data(44).Info("show it")
 }
-

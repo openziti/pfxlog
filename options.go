@@ -31,7 +31,7 @@ type Options struct {
 	PrettyTimestampFormat string
 	JsonTimestampFormat   string
 
-	ContextDataFielder func(data interface{}, logger *logrus.Logger) *logrus.Entry
+	ContextDataFielder func(data interface{}, entry *logrus.Entry) *logrus.Entry
 	ContextDataChecker func(data interface{}) bool
 
 	StandardLogger *logrus.Logger

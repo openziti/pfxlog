@@ -13,7 +13,7 @@ type contextData struct {
 
 func init() {
 	options := pfxlog.DefaultOptions()
-	options.ContextDataFielder = func(v interface{}, l *logrus.Logger) *logrus.Entry {
+	options.ContextDataFielder = func(v interface{}, l *logrus.Entry) *logrus.Entry {
 		cd, ok := v.(*contextData)
 		if ok {
 			return l.WithFields(map[string]interface{}{
@@ -29,5 +29,5 @@ func init() {
 }
 
 func main() {
-	pfxlog.ContextDataLogger(&contextData{"testing", "0x33", 33}).WithField("testing", "a").Infof("oh, wow!")
+	pfxlog.Logger().Data(&contextData{"testing", "0x33", 33}).Entry.WithField("testing", "a").Infof("oh, wow!")
 }
