@@ -15,31 +15,29 @@ func GlobalInit(level logrus.Level, options *Options) {
 	logrus.SetLevel(level)
 	logrus.SetReportCaller(true)
 	globalOptions = options
-	noLogger = logrus.New()
-	noLogger.SetLevel(logrus.PanicLevel)
 }
 
 func Logger() *logrus.Entry {
-	return logrus.NewEntry(logrus.StandardLogger())
+	return logrus.NewEntry(globalOptions.StandardLogger)
 }
 
 func ContextLogger(context string) *logrus.Entry {
-	return logrus.StandardLogger().WithField("context", context)
+	return globalOptions.StandardLogger.WithField("context", context)
 }
 
 func ContextDataLogger(contextData interface{}) *logrus.Entry {
 	if globalOptions.ContextDataFielder != nil {
 		return globalOptions.ContextDataFielder(contextData, logrus.StandardLogger())
 	} else {
-		return logrus.StandardLogger().WithFields(nil)
+		return globalOptions.StandardLogger.WithFields(nil)
 	}
 }
 
 func ContextCheck(contextData interface{}) *logrus.Entry {
 	if globalOptions.ContextDataChecker != nil && globalOptions.ContextDataChecker(contextData) {
-		return logrus.StandardLogger().WithFields(nil)
+		return globalOptions.StandardLogger.WithFields(nil)
 	} else {
-		return &logrus.Entry{Logger: noLogger}
+		return &logrus.Entry{Logger: globalOptions.NoLogger}
 	}
 }
 
@@ -47,9 +45,8 @@ func ContextCheckData(contextData interface{}) *logrus.Entry {
 	if globalOptions.ContextDataChecker != nil && globalOptions.ContextDataChecker(contextData) {
 		return ContextDataLogger(contextData)
 	} else {
-		return &logrus.Entry{Logger: noLogger}
+		return &logrus.Entry{Logger: globalOptions.NoLogger}
 	}
 }
 
 var globalOptions *Options
-var noLogger *logrus.Logger

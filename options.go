@@ -33,6 +33,9 @@ type Options struct {
 
 	ContextDataFielder func(data interface{}, logger *logrus.Logger) *logrus.Entry
 	ContextDataChecker func(data interface{}) bool
+
+	StandardLogger *logrus.Logger
+	NoLogger       *logrus.Logger
 }
 
 func DefaultOptions() *Options {
@@ -41,7 +44,11 @@ func DefaultOptions() *Options {
 		AbsoluteTime:          false,
 		PrettyTimestampFormat: "2006-01-02 15:04:05.000",
 		JsonTimestampFormat:   "2006-01-02T15:04:05.000Z",
+		StandardLogger:        logrus.StandardLogger(),
+		NoLogger:              logrus.New(),
 	}
+	options.NoLogger.SetLevel(logrus.PanicLevel)
+
 	if defaultEnv("PFXLOG_USE_COLOR", false) {
 		return options.Color()
 	} else {
