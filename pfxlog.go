@@ -6,6 +6,11 @@ import (
 	"os"
 )
 
+func init() {
+	// cover cases where ContextLogger is used in a package init function.
+	globalOptions = &Options{StandardLogger: logrus.StandardLogger()}
+}
+
 func GlobalInit(level logrus.Level, options *Options) {
 	if defaultEnv("PFXLOG_NO_JSON", false) || terminal.IsTerminal(int(os.Stdout.Fd())) {
 		logrus.SetFormatter(NewFormatter(options))
