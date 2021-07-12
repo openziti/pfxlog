@@ -16,5 +16,3 @@ func main() {
 	pfxlog.ContextLogger("session-1234abcd").Channels("subsystem_1", "subsystem_2").Infof("hello from subsystem_1 and subsystem_2")
 	pfxlog.Logger().Channels("subsystem_3").Errorf("should not log")
 }
-
-
