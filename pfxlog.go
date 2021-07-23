@@ -19,7 +19,6 @@ func GlobalInit(level logrus.Level, options *Options) {
 	}
 	logrus.SetLevel(level)
 	logrus.SetReportCaller(true)
-	globalOptions = options
 
 	for _, logLevel := range logrus.AllLevels {
 		logger := CloneLogger(options.StandardLogger)
@@ -28,9 +27,11 @@ func GlobalInit(level logrus.Level, options *Options) {
 			globalOptions.Loggers[logLevel] = logger
 		}
 	}
+
+	globalOptions = options
 }
 
-func MapGlobalOptions(f func(*Options) *Options) {
+func GlobalConfig(f func(*Options) *Options) {
 	globalOptions = f(globalOptions)
 }
 
