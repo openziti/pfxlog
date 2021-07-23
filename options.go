@@ -31,13 +31,14 @@ type Options struct {
 	PrettyTimestampFormat string
 	JsonTimestampFormat   string
 
-	ActiveChannels map[string]struct{}
+	ActiveChannels           map[string]struct{}
+	ChannelLogLevelOverrides map[string]logrus.Level
 
 	DataFielder    func(data interface{}, entry *logrus.Entry) *logrus.Entry
 	EnabledChecker func(data interface{}) bool
 
 	StandardLogger *logrus.Logger
-	NoLogger       *logrus.Logger
+	Loggers        map[logrus.Level]*logrus.Logger
 }
 
 func DefaultOptions() *Options {
@@ -47,9 +48,8 @@ func DefaultOptions() *Options {
 		PrettyTimestampFormat: "2006-01-02 15:04:05.000",
 		JsonTimestampFormat:   "2006-01-02T15:04:05.000Z",
 		StandardLogger:        logrus.StandardLogger(),
-		NoLogger:              logrus.New(),
+		Loggers:               map[logrus.Level]*logrus.Logger{},
 	}
-	options.NoLogger.SetLevel(logrus.PanicLevel)
 
 	if defaultEnv("PFXLOG_USE_COLOR", false) {
 		return options.Color()
@@ -87,6 +87,25 @@ func (options *Options) SetActiveChannels(channels ...string) *Options {
 		options.ActiveChannels[channel] = struct{}{}
 	}
 	return options
+}
+
+func (options *Options) SetChannelLogLevel(channel string, level logrus.Level) {
+	m := map[string]logrus.Level{}
+	for k, v := range options.ChannelLogLevelOverrides {
+		m[k] = v
+	}
+	m[channel] = level
+	options.ChannelLogLevelOverrides = m
+}
+
+func (options *Options) ClearChannelLogLevel(channel string) {
+	m := map[string]logrus.Level{}
+	for k, v := range options.ChannelLogLevelOverrides {
+		if k != channel {
+			m[k] = v
+		}
+	}
+	options.ChannelLogLevelOverrides = m
 }
 
 func (options *Options) Color() *Options {

@@ -20,6 +20,18 @@ func GlobalInit(level logrus.Level, options *Options) {
 	logrus.SetLevel(level)
 	logrus.SetReportCaller(true)
 	globalOptions = options
+
+	for _, logLevel := range logrus.AllLevels {
+		logger := CloneLogger(options.StandardLogger)
+		logger.Level = logLevel
+		if _, found := globalOptions.Loggers[logLevel]; !found {
+			globalOptions.Loggers[logLevel] = logger
+		}
+	}
+}
+
+func MapGlobalOptions(f func(*Options) *Options) {
+	globalOptions = f(globalOptions)
 }
 
 func Logger() *Builder {
@@ -30,8 +42,23 @@ func ContextLogger(context string) *Builder {
 	return &Builder{globalOptions.StandardLogger.WithField("context", context)}
 }
 
+type LogWirer interface {
+	WireLog(entry *logrus.Entry) *logrus.Entry
+}
+
+type LogWirerF func(entry *logrus.Entry) *logrus.Entry
+
+func (self LogWirerF) WireLog(entry *logrus.Entry) *logrus.Entry {
+	return self(entry)
+}
+
 type Builder struct {
 	*logrus.Entry
+}
+
+func (self *Builder) Wire(wirer LogWirer) *Builder {
+	self.Entry = wirer.WireLog(self.Entry)
+	return self
 }
 
 func (self *Builder) Data(data interface{}) *Builder {
@@ -43,7 +70,7 @@ func (self *Builder) Data(data interface{}) *Builder {
 
 func (self *Builder) Enabled(data interface{}) *Builder {
 	if globalOptions.EnabledChecker != nil && !globalOptions.EnabledChecker(data) {
-		self.Entry.Logger = globalOptions.NoLogger
+		self.Entry.Logger = globalOptions.Loggers[logrus.PanicLevel]
 	}
 	return self
 }
@@ -55,8 +82,35 @@ func (self *Builder) Channels(channels ...string) *Builder {
 			return self
 		}
 	}
-	self.Entry.Logger = globalOptions.NoLogger
+	self.Entry.Logger = globalOptions.Loggers[logrus.PanicLevel]
 	return self
+}
+
+func (self *Builder) WithChannels(channels ...string) *Builder {
+	for _, channel := range channels {
+		if level, found := globalOptions.ChannelLogLevelOverrides[channel]; found {
+			if level > self.Entry.Logger.Level {
+				self.Entry.Logger = globalOptions.Loggers[level]
+			}
+		}
+	}
+	self.Entry = self.Entry.WithField("channels", channels)
+	return self
+}
+
+func ChannelLogger(channels ...string) *Builder {
+	return Logger().WithChannels(channels...)
+}
+
+func GetLogger(level logrus.Level) *logrus.Logger {
+	return globalOptions.Loggers[level]
+}
+
+func SetFormatter(f logrus.Formatter) {
+	globalOptions.StandardLogger.SetFormatter(f)
+	for _, logger := range globalOptions.Loggers {
+		logger.SetFormatter(f)
+	}
 }
 
 var globalOptions *Options
