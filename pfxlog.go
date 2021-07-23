@@ -43,6 +43,10 @@ func ContextLogger(context string) *Builder {
 	return &Builder{globalOptions.StandardLogger.WithField("context", context)}
 }
 
+type Builder struct {
+	*logrus.Entry
+}
+
 type LogWirer interface {
 	WireLog(entry *logrus.Entry) *logrus.Entry
 }
@@ -51,10 +55,6 @@ type LogWirerF func(entry *logrus.Entry) *logrus.Entry
 
 func (self LogWirerF) WireLog(entry *logrus.Entry) *logrus.Entry {
 	return self(entry)
-}
-
-type Builder struct {
-	*logrus.Entry
 }
 
 func (self *Builder) Wire(wirer LogWirer) *Builder {
