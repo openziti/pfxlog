@@ -103,7 +103,7 @@ func ChannelLogger(channels ...string) *Builder {
 	return Logger().WithChannels(channels...)
 }
 
-func GetLogger(level logrus.Level) *logrus.Logger {
+func LevelLogger(level logrus.Level) *logrus.Logger {
 	return globalOptions.Loggers[level]
 }
 
