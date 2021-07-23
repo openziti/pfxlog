@@ -47,18 +47,18 @@ type Builder struct {
 	*logrus.Entry
 }
 
-type LogWirer interface {
-	WireLog(entry *logrus.Entry) *logrus.Entry
+type Wirer interface {
+	WireEntry(entry *logrus.Entry) *logrus.Entry
 }
 
-type LogWirerF func(entry *logrus.Entry) *logrus.Entry
+type EntryWireF func(entry *logrus.Entry) *logrus.Entry
 
-func (self LogWirerF) WireLog(entry *logrus.Entry) *logrus.Entry {
+func (self EntryWireF) WireEntry(entry *logrus.Entry) *logrus.Entry {
 	return self(entry)
 }
 
-func (self *Builder) Wire(wirer LogWirer) *Builder {
-	self.Entry = wirer.WireLog(self.Entry)
+func (self *Builder) Wire(wirer Wirer) *Builder {
+	self.Entry = wirer.WireEntry(self.Entry)
 	return self
 }
 
