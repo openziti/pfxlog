@@ -43,6 +43,12 @@ func (f *formatter) Format(entry *logrus.Entry) ([]byte, error) {
 	trimmedFunction := ""
 	if entry.Caller != nil {
 		trimmedFunction = strings.TrimPrefix(entry.Caller.Function, f.options.TrimPrefix)
+	} else if fn, found := entry.Data["func"]; found {
+		if fns, ok := fn.(string); ok {
+			trimmedFunction = strings.TrimPrefix(fns, f.options.TrimPrefix)
+			delete(entry.Data, "func")
+			delete(entry.Data, "file")
+		}
 	}
 	if context, found := entry.Data["context"]; found {
 		trimmedFunction += " [" + context.(string) + "]"
