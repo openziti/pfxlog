@@ -6,13 +6,12 @@ import (
 	"fmt"
 	"github.com/mgutz/ansi"
 	"io"
-	"os"
 	"strings"
 	"time"
 )
 
-func Filter(options *Options) {
-	r := bufio.NewReader(os.Stdin)
+func Filter(sourceR io.Reader, options *Options) {
+	r := bufio.NewReader(sourceR)
 	var last time.Time
 	lastSet := false
 	for {

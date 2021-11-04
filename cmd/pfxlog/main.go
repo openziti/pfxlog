@@ -21,17 +21,31 @@ func main() {
 
 var rootCmd = &cobra.Command{
 	Use:   strings.TrimSuffix(filepath.Base(os.Args[0]), filepath.Ext(os.Args[0])),
-	Short: "pfxlog filter",
+	Short: "pfxlog filter [<file1>...<fileN>]",
 	Run:   Filter,
 }
 
 var trimPrefix string
 var absoluteTime bool
 
-func Filter(_ *cobra.Command, _ []string) {
+func Filter(_ *cobra.Command, args []string) {
 	options := pfxlog.DefaultOptions().SetTrimPrefix(trimPrefix)
 	if absoluteTime {
 		options = options.SetAbsoluteTime()
 	}
-	pfxlog.Filter(options)
+
+	if len(args) > 0 {
+		for _, arg := range args {
+			f, err := os.OpenFile(arg, os.O_RDONLY, os.ModePerm)
+			if err != nil {
+				panic(err)
+			}
+			pfxlog.Filter(f, options)
+			if err := f.Close(); err != nil {
+				panic(err)
+			}
+		}
+	} else {
+		pfxlog.Filter(os.Stdin, options)
+	}
 }
