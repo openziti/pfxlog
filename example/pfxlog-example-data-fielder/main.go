@@ -30,4 +30,5 @@ func init() {
 
 func main() {
 	pfxlog.Logger().Data(&contextData{"testing", "0x33", 33}).Entry.WithField("testing", "a").Infof("oh, wow!")
+	pfxlog.Logger().Data("hello").Entry.WithField("testing", "b").Infof("indeed")
 }
