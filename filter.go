@@ -61,7 +61,7 @@ func Filter(sourceR io.Reader, options *Options) {
 		if v, found := msg["func"]; found {
 			prefix = strings.TrimPrefix(v.(string), options.TrimPrefix)
 		}
-		if context, found := msg["context"]; found {
+		if context, found := msg["_context"]; found {
 			prefix += " [" + context.(string) + "]"
 		}
 		message := msg["msg"].(string)
@@ -96,7 +96,7 @@ func Filter(sourceR io.Reader, options *Options) {
 func data(in map[string]interface{}) map[string]interface{} {
 	out := make(map[string]interface{})
 	for k, v := range in {
-		if k != "level" && k != "func" && k != "file" && k != "msg" && k != "time" && k != "context" {
+		if k != "level" && k != "func" && k != "file" && k != "msg" && k != "time" && k != "_context" {
 			out[k] = v
 		}
 	}

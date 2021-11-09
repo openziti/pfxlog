@@ -40,7 +40,7 @@ func Logger() *Builder {
 }
 
 func ContextLogger(context string) *Builder {
-	return &Builder{globalOptions.StandardLogger.WithField("context", context)}
+	return &Builder{globalOptions.StandardLogger.WithField("_context", context)}
 }
 
 type Builder struct {
@@ -79,7 +79,7 @@ func (self *Builder) Enabled(data interface{}) *Builder {
 func (self *Builder) Channels(channels ...string) *Builder {
 	for _, channel := range channels {
 		if _, found := globalOptions.ActiveChannels[channel]; found {
-			self.Entry = self.Entry.WithField("channels", channels)
+			self.Entry = self.Entry.WithField("_channels", channels)
 			return self
 		}
 	}
@@ -95,7 +95,7 @@ func (self *Builder) WithChannels(channels ...string) *Builder {
 			}
 		}
 	}
-	self.Entry = self.Entry.WithField("channels", channels)
+	self.Entry = self.Entry.WithField("_channels", channels)
 	return self
 }
 

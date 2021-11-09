@@ -50,7 +50,17 @@ func (f *formatter) Format(entry *logrus.Entry) ([]byte, error) {
 			delete(entry.Data, "file")
 		}
 	}
-	if context, found := entry.Data["context"]; found {
+	if v, found := entry.Data["_channels"]; found {
+		trimmedFunction += " |"
+		for i, channel := range v.([]string) {
+			if i > 0 {
+				trimmedFunction += ", "
+			}
+			trimmedFunction += channel
+		}
+		trimmedFunction += "|"
+	}
+	if context, found := entry.Data["_context"]; found {
 		trimmedFunction += " [" + context.(string) + "]"
 	}
 	message := entry.Message
@@ -58,7 +68,7 @@ func (f *formatter) Format(entry *logrus.Entry) ([]byte, error) {
 		fields := "{"
 		field := 0
 		for k, v := range entry.Data {
-			if k != "context" {
+			if k != "_context" && k != "_channels" {
 				if field > 0 {
 					fields += " "
 				}
@@ -79,9 +89,12 @@ func (f *formatter) Format(entry *logrus.Entry) ([]byte, error) {
 }
 
 func withFields(data map[string]interface{}) bool {
-	if _, found := data["context"]; found {
-		return len(data) > 1
-	} else {
-		return len(data) > 0
+	gt := 0
+	if _, contextFound := data["_context"]; contextFound {
+		gt++
 	}
+	if _, channelsFound := data["_channels"]; channelsFound {
+		gt++
+	}
+	return len(data) > gt
 }
