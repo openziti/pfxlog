@@ -88,7 +88,7 @@ func (self *Builder) Enabled(data interface{}) *Builder {
 	return self
 }
 
-func (self *Builder) Channels(channels ...string) *Builder {
+func (self *Builder) EnableChannels(channels ...string) *Builder {
 	for _, channel := range channels {
 		if _, found := globalOptions.ActiveChannels[channel]; found {
 			self.Entry = self.Entry.WithField("_channels", channels)
@@ -99,7 +99,7 @@ func (self *Builder) Channels(channels ...string) *Builder {
 	return self
 }
 
-func (self *Builder) WithChannels(channels ...string) *Builder {
+func (self *Builder) LevelChannels(channels ...string) *Builder {
 	for _, channel := range channels {
 		if level, found := globalOptions.ChannelLogLevelOverrides[channel]; found {
 			if level > self.Entry.Logger.Level {
@@ -113,7 +113,7 @@ func (self *Builder) WithChannels(channels ...string) *Builder {
 }
 
 func ChannelLogger(channels ...string) *Builder {
-	return Logger().WithChannels(channels...)
+	return Logger().LevelChannels(channels...)
 }
 
 func LevelLogger(level logrus.Level) *logrus.Logger {
