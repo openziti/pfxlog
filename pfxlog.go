@@ -36,15 +36,27 @@ func GlobalConfig(f func(*Options) *Options) {
 }
 
 func Logger() *Builder {
-	return &Builder{logrus.NewEntry(globalOptions.StandardLogger)}
+	return &Builder{Entry: logrus.NewEntry(globalOptions.StandardLogger)}
 }
 
 func ContextLogger(context string) *Builder {
-	return &Builder{globalOptions.StandardLogger.WithField("_context", context)}
+	return &Builder{Entry: globalOptions.StandardLogger.WithField("_context", context)}
 }
 
 type Builder struct {
+	channels []string
 	*logrus.Entry
+}
+
+func (self *Builder) Clone() *Builder {
+	clone := &Builder{
+		Entry: self.Entry.Dup(),
+	}
+	if len(self.channels) > 0 {
+		clone.channels = make([]string, len(self.channels))
+		copy(clone.channels, self.channels)
+	}
+	return clone
 }
 
 type Wirer interface {
@@ -95,7 +107,8 @@ func (self *Builder) WithChannels(channels ...string) *Builder {
 			}
 		}
 	}
-	self.Entry = self.Entry.WithField("_channels", channels)
+	self.channels = append(self.channels, channels...)
+	self.Entry = self.Entry.WithField("_channels", self.channels)
 	return self
 }
 
