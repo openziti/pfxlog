@@ -112,6 +112,11 @@ func (self *Builder) WithChannels(channels ...string) *Builder {
 	return self
 }
 
+func (self *Builder) SetContext(context string) *Builder {
+	self.Entry = self.Entry.WithField("_context", context)
+	return self
+}
+
 func ChannelLogger(channels ...string) *Builder {
 	return Logger().WithChannels(channels...)
 }
