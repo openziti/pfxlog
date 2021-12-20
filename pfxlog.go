@@ -4,6 +4,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"golang.org/x/crypto/ssh/terminal"
 	"os"
+	"sort"
 )
 
 func init() {
@@ -100,15 +101,25 @@ func (self *Builder) Channels(channels ...string) *Builder {
 }
 
 func (self *Builder) WithChannels(channels ...string) *Builder {
+	chidx := make(map[string]struct{})
+	for _, ch := range self.channels {
+		chidx[ch] = struct{}{}
+	}
 	for _, channel := range channels {
 		if level, found := globalOptions.ChannelLogLevelOverrides[channel]; found {
 			if level > self.Entry.Logger.Level {
 				self.Entry.Logger = globalOptions.Loggers[level]
 			}
 		}
+		chidx[channel] = struct{}{}
 	}
-	self.channels = append(self.channels, channels...)
-	delete(self.Entry.Data, "_channels")
+	self.channels = []string{}
+	for k, _ := range chidx {
+		self.channels = append(self.channels, k)
+	}
+	sort.Slice(self.channels, func(i, j int) bool {
+		return self.channels[i] < self.channels[j]
+	})
 	self.Entry = self.Entry.WithField("_channels", self.channels)
 	return self
 }
