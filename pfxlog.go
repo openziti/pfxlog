@@ -108,6 +108,7 @@ func (self *Builder) WithChannels(channels ...string) *Builder {
 		}
 	}
 	self.channels = append(self.channels, channels...)
+	delete(self.Entry.Data, "_channels")
 	self.Entry = self.Entry.WithField("_channels", self.channels)
 	return self
 }
